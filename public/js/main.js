@@ -12,7 +12,6 @@ $(document).ready(() => {
     $.get('/api/hotels')
         .then(function (response) {
             response.forEach(function (hotel) {
-                console.log(hotel);
                 $hotelChoices.append(`<option>${hotel.name}</option>`)
             })
         })
@@ -20,9 +19,7 @@ $(document).ready(() => {
 
     $.get('/api/restaurants')
         .then(function (response) {
-            console.log("are we here")
             response.forEach(function (restaurant) {
-                console.log(restaurant);
                 $restaurantChoices.append(`<option>${restaurant.name}</option>`)
             })
         })
@@ -31,7 +28,6 @@ $(document).ready(() => {
     $.get('/api/activities')
         .then(function (response) {
             response.forEach(function (activity) {
-                console.log(activity);
                 $activityChoices.append(`<option>${activity.name}</option>`)
             })
         })
