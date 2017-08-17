@@ -33,6 +33,52 @@ $(document).ready(() => {
         })
         .catch(console.error.bind(console));
 
+    //get all days request which logs 'You GOT all the days!'
+    $.get('/api/days')
+        .then(function (response) {
+            if(!response.length){
+                $.post('/api/days', {number: 1})
+                .then(function(day1){
+                    console.log('day 1 posted', day1)
+                })
+                .catch(console.error.bind(console));
+            }
+            console.log('You GOT all the days!', response)
+        })
+        .catch(console.error.bind(console));
+
+    //attach a button listener to #day-add   
+    //when we add a day, we will need a post request to '/api/days'
+    //log 'You CREATED a day!'
+    let $dayBtns = $('.day-buttons');
+    let $addDayBtn = $('#day-add');
+    let dayCount = 1;
+
+    //add attraction variables
+    let $hotelChoices = $('#hotel-choices');
+    let $restaurantChoices = $('#restaurant-choices');
+    let $activityChoices = $('#activity-choices');
+    let $attAddBtn = $('button[data-action="add"]');
+
+    $addDayBtn.on('click', function(){
+        dayCount++;
+        $.post('/api/days', 
+        {
+            number:dayCount
+        })
+        .then(function(newDay){
+            console.log('You CREATED a day!', newDay)
+        })
+        .catch(console.error.bind(console));
+    })
+
+    //attach a button listener to child of restaurant-choices
+    //where child is data-action='add'
+    //when a restaurant is added make a post to '/api/days/:id/restaurants'
+    //do the same for activity and hotel
+
+    //when trip planner page is loaded we need to load day itinerary
+    //possibly we just need to get all days, but will this load attractions?
 
 
 

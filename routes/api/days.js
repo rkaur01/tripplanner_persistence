@@ -8,7 +8,7 @@ var Day = require('../../models').Day;
 //get all days
 dayRouter.get('/api/days', function (req, res, next) {
     console.log("getting into API/DAYS")
-    //returns a promise, which is an array of all hotels 
+    //returns a promise, which is an array of all days 
     Day.findAll()
         .then(function (days) {
             console.log(days)
@@ -39,9 +39,8 @@ dayRouter.delete('/api/days/:id', function (req, res, next) {
 
 // //post a new day
 dayRouter.post('/api/days', function (req, res, next) {
-    Day.create({
-        number: req.body
-    })
+    console.log('Are we here', req.body)
+    Day.create(req.body)
         .then(function (newday) {
             res.send(newday)
         })
@@ -94,34 +93,36 @@ dayRouter.delete('/api/days/:id/activities', function (req, res, next) {
 
 //hotels
 dayRouter.post('/api/days/:id/hotels', function (req, res, next) {
-    Day.update({
-        hotelId: req.body.id
-    },
-        {
-            where: {
-                id: req.params.id,
-            }
+    Day.findOne({
+        where: {
+            id: req.params.id,
         }
-    )
-    .then(function (updatedHotel) {
-        res.send(updatedHotel)
     })
+    .then(function(selectedDay){
+        //Day.setHotel(hotelId)
+        Day.setHotel(req.body.id)
+    })
+    .then(function (updatedDay) {
+        res.send(updatedDay)
+    })
+    .catch(console.error.bind(console));
 });
 
 // //delete a new attraction to a day by id
 dayRouter.delete('/api/days/:id/hotels', function (req, res, next) {
-    Day.update({
-        hotelId: null
-    },
-        {
-            where: {
-                id: req.params.id,
-            }
+    Day.findOne({
+        where: {
+            id: req.params.id,
         }
-    )
-    .then(function (updatedHotel) {
-        res.send(updatedHotel)
     })
+    .then(function(selectedDay){
+        //Day.setHotel(null)
+        Day.setHotel(null)
+    })
+    .then(function (updatedDay) {
+        res.send(updatedDay)
+    })
+    .catch(console.error.bind(console));
 });
 
 module.exports = dayRouter;
