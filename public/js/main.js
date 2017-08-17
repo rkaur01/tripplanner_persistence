@@ -36,12 +36,12 @@ $(document).ready(() => {
     //get all days request which logs 'You GOT all the days!'
     $.get('/api/days')
         .then(function (response) {
-            if(!response.length){
-                $.post('/api/days', {number: 1})
-                .then(function(day1){
-                    console.log('day 1 posted', day1)
-                })
-                .catch(console.error.bind(console));
+            if (!response.length) {
+                $.post('/api/days', { number: 1 })
+                    .then(function (day1) {
+                        console.log('day 1 posted', day1)
+                    })
+                    .catch(console.error.bind(console));
             }
             console.log('You GOT all the days!', response)
         })
@@ -55,27 +55,87 @@ $(document).ready(() => {
     let dayCount = 1;
 
     //add attraction variables
-    let $hotelChoices = $('#hotel-choices');
-    let $restaurantChoices = $('#restaurant-choices');
-    let $activityChoices = $('#activity-choices');
-    let $attAddBtn = $('button[data-action="add"]');
+    var $resAddBtn = $restaurantChoices.next()
+    var $hotelAddBtn = $hotelChoices.next()
+    var $actAddBtn = $activityChoices.next()
 
-    $addDayBtn.on('click', function(){
+    $addDayBtn.on('click', function () {
         dayCount++;
-        $.post('/api/days', 
-        {
-            number:dayCount
-        })
-        .then(function(newDay){
-            console.log('You CREATED a day!', newDay)
-        })
-        .catch(console.error.bind(console));
+        $.post('/api/days',
+            {
+                number: dayCount
+            })
+            .then(function (newDay) {
+                console.log('You CREATED a day!', newDay)
+            })
+            .catch(console.error.bind(console));
     })
 
     //attach a button listener to child of restaurant-choices
     //where child is data-action='add'
-    //when a restaurant is added make a post to '/api/days/:id/restaurants'
-    //do the same for activity and hotel
+
+    $resAddBtn.on('click', function (e) {
+        // console.log(dayModule);
+        // console.log(tripModule);
+        var getCurent =tripModule.getCurrent().number
+        // THE LAST THING WE WERE TRYING TO DO IS GET THE HOTEL NAME //
+        //figure out to get inner html of selected option
+        var rName;
+        Restaurant.findOne({
+            where: { name: rName }
+        })
+            .then(function (restaurant) {
+                //when a restaurant is added make a post to '/api/days/:id/restaurants'
+                //do the same for activity and hotel
+                $.post(`/api/days/${getCurent}/restaurants`,
+                    {
+                        restaurant_id: restaurant.id
+                    })
+            })
+            .catch(console.error.bind(console));
+    })
+
+    $actAddBtn.on('click', function () {
+        //figure out to get inner html of selected option
+        var aName;
+        Activity.findOne({
+            where: { name: aName }
+        })
+            .then(function (activity) {
+                //when a restaurant is added make a post to '/api/days/:id/restaurants'
+                //do the same for activity and hotel
+                $.post('/api/days/:id/activities',
+                    {
+                        activity_id: activity.id
+                    })
+            })
+            .catch(console.error.bind(console));
+    })
+
+    // hotel 
+    $hotelAddBtn.on('click', function () {
+        //figure out to get inner html of selected option
+        var hName;
+        hotel.findOne({
+            where: { name: hName }
+        })
+            .then(function (hotel) {
+                //when a restaurant is added make a post to '/api/days/:id/restaurants'
+                //do the same for activity and hotel
+                $.post('/api/days/:id/hotels',
+                    {
+                        hotelId: hotel.id
+                    })
+            })
+            .catch(console.error.bind(console));
+    })
+
+
+
+
+
+
+
 
     //when trip planner page is loaded we need to load day itinerary
     //possibly we just need to get all days, but will this load attractions?
